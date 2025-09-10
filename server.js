@@ -103,8 +103,13 @@ app.use('/api/customers', customersRoutes);
 app.use('/api/assistant', assistantRoutes);
 app.use('/api/payments', paymentsRoutes);
 
-// Welcome endpoint with Arabic support
+// Serve the frontend landing page
 app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: './public' });
+});
+
+// API info endpoint
+app.get('/api', (req, res) => {
   const isArabic = req.headers['accept-language']?.includes('ar') || req.query.lang === 'ar';
   
   res.json({

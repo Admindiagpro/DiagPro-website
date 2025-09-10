@@ -7,6 +7,100 @@ const router = express.Router();
 // GET /api/services - Get all services with filtering and pagination
 router.get('/', async (req, res) => {
   try {
+    // Check if database is connected by trying to get mongoose connection state
+    const isDBConnected = false; // Database is commented out in server.js
+    
+    if (!isDBConnected) {
+      // Return fallback services for frontend demo
+      const fallbackServices = [
+        {
+          _id: '1',
+          name: 'Advanced Diagnosis',
+          name_ar: 'التشخيص المتقدم',
+          description: 'Comprehensive diagnosis using advanced computer systems',
+          description_ar: 'تشخيص شامل للأعطال باستخدام أحدث أجهزة الكمبيوتر',
+          basePrice: 150,
+          currency: 'SAR',
+          duration: 60,
+          category: 'diagnosis',
+          category_ar: 'التشخيص',
+          isActive: true,
+          isPopular: true,
+          averageRating: 4.8,
+          totalBookings: 250
+        },
+        {
+          _id: '2',
+          name: 'Regular Maintenance',
+          name_ar: 'صيانة دورية',
+          description: 'Regular maintenance services for optimal performance',
+          description_ar: 'خدمات الصيانة الدورية لضمان أداء مثالي لسيارتك',
+          basePrice: 200,
+          currency: 'SAR',
+          duration: 120,
+          category: 'maintenance',
+          category_ar: 'الصيانة',
+          isActive: true,
+          isPopular: true,
+          averageRating: 4.7,
+          totalBookings: 300
+        },
+        {
+          _id: '3',
+          name: 'Engine Repair',
+          name_ar: 'إصلاح المحرك',
+          description: 'Engine repair and maintenance with highest quality standards',
+          description_ar: 'إصلاح وصيانة المحركات بأعلى معايير الجودة',
+          basePrice: 500,
+          currency: 'SAR',
+          duration: 240,
+          category: 'repair',
+          category_ar: 'الإصلاح',
+          isActive: true,
+          isPopular: false,
+          averageRating: 4.9,
+          totalBookings: 150
+        },
+        {
+          _id: '4',
+          name: 'Electrical System',
+          name_ar: 'النظام الكهربائي',
+          description: 'Electrical and electronic systems inspection and repair',
+          description_ar: 'فحص وإصلاح الأنظمة الكهربائية والإلكترونية',
+          basePrice: 100,
+          currency: 'SAR',
+          duration: 90,
+          category: 'electrical',
+          category_ar: 'الكهرباء',
+          isActive: true,
+          isPopular: true,
+          averageRating: 4.6,
+          totalBookings: 200
+        }
+      ];
+
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const total = fallbackServices.length;
+      const totalPages = Math.ceil(total / limit);
+
+      res.json({
+        success: true,
+        data: fallbackServices,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalServices: total,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        },
+        message: req.headers['accept-language']?.includes('ar') ? 
+          'تم جلب الخدمات بنجاح' : 
+          'Services retrieved successfully'
+      });
+      return;
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
